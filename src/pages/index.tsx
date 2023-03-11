@@ -21,7 +21,7 @@ declare global {
 
 export default function Home() {
 
-  const defaultSnapOrigin = `local:http://localhost:8080`;
+  const defaultSnapOrigin = `npm:aa-snap37`;
 
   const connectSnap = async (
     snapId: string = defaultSnapOrigin,
