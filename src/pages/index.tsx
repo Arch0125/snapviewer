@@ -21,7 +21,7 @@ declare global {
 
 export default function Home() {
 
-  const defaultSnapOrigin = `npm:aa-snap37`;
+  const defaultSnapOrigin = `local:http://localhost:8080`;
 
   const connectSnap = async (
     snapId: string = defaultSnapOrigin,
@@ -59,6 +59,34 @@ export default function Home() {
     });
   }
 
+  const txaa = async()=>{
+    await window.ethereum?.request({
+      method:"wallet_invokeSnap",
+      params:{
+        snapId : defaultSnapOrigin,
+        request:{
+          method:"transact_aa",
+        },
+      },
+    });
+  }
+
+  const makeTx = async()=>{
+    try{
+      const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+      const signer = provider.getSigner();
+      const tx = await signer?.sendTransaction({
+        to: ethers.utils.getAddress("0x118aeFa610ceb7C42C73d83dfC3D8C54124A4946"),
+        value: ethers.utils.parseEther("0.01"),
+      });
+      await tx?.wait();
+    }
+    catch(e){
+      console.log(e);
+    }
+    
+  }
+
   return (
     <>
       <Head>
@@ -83,11 +111,13 @@ export default function Home() {
         </div>
         <br/>
         <br/>
-        <p className='text-white text-3xl mb-2 font-bold'>Try it out now! without connecting MetaMask to the Site</p>
+        <p className='text-white text-3xl mb-2 font-bold'>Try it out now!</p>
         <div className='flex flex-row' >
           <button className='bg-blue-600 font-semibold text-white px-4 py-2 m-4 rounded-xl' onClick={()=>connectSnap()}>Install Snap</button>
           <button className='bg-blue-600 font-semibold text-white px-4 py-2 m-4 rounded-xl' onClick={()=>callSnap()}>Connect SCW</button>
           <button className='bg-blue-600 font-semibold text-white px-4 py-2 m-4 rounded-xl' onClick={()=>deposit()}>Deposit Funds</button>
+          <button className='bg-blue-600 font-semibold text-white px-4 py-2 m-4 rounded-xl' onClick={()=>makeTx()}>Make Tx</button>
+          <button className='bg-blue-600 font-semibold text-white px-4 py-2 m-4 rounded-xl' onClick={()=>txaa()}>Make Tx AA</button>
         </div>
       </div>
     </>
